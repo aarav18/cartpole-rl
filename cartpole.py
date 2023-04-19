@@ -1,7 +1,5 @@
 # dependencies
-import gym, random
-import numpy as np
-import tensorflow as tf
+import gym
 
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Flatten
@@ -16,13 +14,15 @@ env = gym.make('CartPole-v0')
 states = env.observation_space.shape[0]
 actions = env.action_space.n
 
-# model
+# build model
 def build_model(states, actions):
     model = Sequential()
+    
     model.add(Flatten(input_shape=(1, states)))
     model.add(Dense(24, activation='relu'))
     model.add(Dense(24, activation='relu'))
     model.add(Dense(actions, activation='linear'))
+    
     return model
 
 model = build_model(states, actions)
@@ -31,6 +31,7 @@ model = build_model(states, actions)
 def build_agent(model, actions):
     policy = BoltzmannQPolicy()
     memory = SequentialMemory(limit=50000, window_length=1)
+    
     dqn = DQNAgent(model=model,
                    memory=memory, 
                    policy=policy, 
